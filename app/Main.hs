@@ -4,4 +4,4 @@ import Language.Halon
 import Data.Set
 
 main :: IO ()
-main = print (Argument Scalar Required (singleton Integer))
+main = print (ArgumentType Scalar Required (singleton Integer))
