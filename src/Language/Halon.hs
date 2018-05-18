@@ -6,6 +6,7 @@ module Language.Halon (
   , Optionality(..)
   , ArgumentType(..)
   , Argument(..)
+  , Result(..)
   , Function(..)
 ) where
 
@@ -42,8 +43,8 @@ data ArgumentType = ArgumentType ValueKind Optionality (S.Set PrimitiveType)
 data Argument =
   Argument { name :: T.Text
            , displayName :: Maybe T.Text
-           , ty :: ArgumentType
            , description :: Maybe T.Text
+           , ty :: ArgumentType
            } deriving Show
 
 data Result =
@@ -54,8 +55,9 @@ data Result =
          } deriving Show
 
 data Function =
-  Function { arguments :: [(T.Text, ArgumentType)]
-           , result :: Result
+  Function { name :: T.Text
+           , arguments :: [Argument]
+           , results :: [Result]
            , source :: T.Text
            , description :: Maybe T.Text
            , allowCaching :: Bool

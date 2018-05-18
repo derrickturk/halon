@@ -70,20 +70,48 @@ instance ToSFD ValueKind where
     sfdKind Table = "Table"
 
 instance ToSFD Argument where
-  toSFD (Argument name displayName ty desc) = Container (tag "Input") $
+  toSFD (Argument name displayName desc ty) = Container (tag "Input") $
     [ Text (tag "Name") (escape name)
     , Text (tag "DisplayName") (escape $ fromMaybe name displayName)
     , case desc of
         Nothing -> Container (tag "Description") []
         Just d -> Text (tag "Description") (escape d)
-    ] ++ typeSFD ty
+    ] <> typeSFD ty
     where
       typeSFD (ArgumentType kind Required types) =
-        [ toSFD kind ] ++ fmap toSFD (S.toList types)
+        [ toSFD kind ] <> fmap toSFD (S.toList types)
       typeSFD (ArgumentType kind Optional types) =
         [ toSFD kind
         , Text (tag "IsOptional") (Escaped "true")
-        ] ++ fmap toSFD (S.toList types)
+        ] <> fmap toSFD (S.toList types)
+
+maybeTextSFD :: Tag -> Maybe T.Text -> SFD
+maybeTextSFD tag Nothing = Container tag []
+maybeTextSFD tag (Just t) = Text tag (escape t)
+
+instance ToSFD Result where
+  toSFD (Result name displayName desc kind) = Container (tag "Output") $
+    [ Text (tag "Name") (escape name)
+    , Text (tag "DisplayName") (escape $ fromMaybe name displayName)
+    , maybeTextSFD (tag "Description") desc
+    , toSFD kind
+    ]
+
+-- TODO: not sure where the cache bit goes
+instance ToSFD Function where
+  toSFD (Function name args results src desc _) = Container
+    (tagWithAttrs "ScriptFunctionDefinition"
+      [ ("xmlns:xsd", "http://www.w3.org/2001/XMLSchema")
+      , ("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+      ]) $
+    [ Container (tagWithAttrs "Version" [("Major", "1"), ("Minor", "0")]) []
+    , Text (tag "Name") (escape name)
+    , Text (tag "Script") (escape src)
+    , Text (tag "Language") (Escaped "TERR")
+    ]
+    <> fmap toSFD args
+    <> fmap toSFD results
+    <> [ maybeTextSFD (tag "Description") desc ]
 
 indent :: Int -> T.Text
 indent = flip T.replicate "  "
