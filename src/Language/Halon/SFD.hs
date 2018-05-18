@@ -129,9 +129,9 @@ renderInner n (Text tag e) = indent n <> renderTagOpen tag <> ">"
   <> getEscaped e
   <> renderTagClose tag <> "\n"
 renderInner n (Container tag []) = indent n <> renderTagOpen tag <> " />\n"
-renderInner n (Container tag contents) = indent n <> renderTagOpen tag
+renderInner n (Container tag contents) = indent n <> renderTagOpen tag <> ">\n"
   <> mconcat (renderInner (n + 1) <$> contents)
   <> indent n <> renderTagClose tag <> "\n"
 
 render :: SFD -> T.Text
-render = ("<?xml version=\"1.0\"?>" <>) . renderInner 0
+render = ("<?xml version=\"1.0\"?>\n" <>) . renderInner 0

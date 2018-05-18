@@ -24,7 +24,7 @@ data PrimitiveType =
   | DateTime
   | Boolean
   | Binary
-  deriving (Eq, Show)
+  deriving (Eq, Ord, Show)
 
 data ValueKind =
     Scalar
