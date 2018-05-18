@@ -1,6 +1,7 @@
 module Main where
 
-import Lib
+import Language.Halon
+import Data.Set
 
 main :: IO ()
-main = someFunc
+main = print (Argument Scalar Required (singleton Integer))
