@@ -1,0 +1,50 @@
+name:                halon
+version:             0.1.0.0
+github:              "derrickturk/halon"
+license:             MPL2
+license-file:        LICENSE.md
+author:              "Derrick W. Turk"
+maintainer:          "dwt@terminusdatascience.com"
+copyright:           "2018 Derrick W. Turk"
+
+extra-source-files:
+- README.md
+- LICENSE.md
+- ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Putting out (spot) fires with science.
+
+dependencies:
+- base >= 4.7 && < 5
+
+library:
+  source-dirs: src
+
+executables:
+  halon-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - halon
+
+tests:
+  halon-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - halon
