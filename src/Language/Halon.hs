@@ -1,6 +1,13 @@
 {-# LANGUAGE DuplicateRecordFields #-}
 
-module Language.Halon where
+module Language.Halon (
+    PrimitiveType(..)
+  , ValueKind(..)
+  , Optionality(..)
+  , ArgumentType(..)
+  , Argument(..)
+  , Function(..)
+) where
 
 import qualified Data.Set as S
 import qualified Data.Text as T
@@ -34,14 +41,22 @@ data ArgumentType = ArgumentType ValueKind Optionality (S.Set PrimitiveType)
 
 data Argument =
   Argument { name :: T.Text
+           , displayName :: Maybe T.Text
            , ty :: ArgumentType
            , description :: Maybe T.Text
            } deriving Show
 
+data Result =
+  Result { name :: T.Text
+         , displayName :: Maybe T.Text
+         , description :: Maybe T.Text
+         , kind :: ValueKind
+         } deriving Show
+
 data Function =
   Function { arguments :: [(T.Text, ArgumentType)]
-           , allowCaching :: Bool
+           , result :: Result
            , source :: T.Text
            , description :: Maybe T.Text
-           , resultKind :: ValueKind
+           , allowCaching :: Bool
            } deriving Show
